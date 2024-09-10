@@ -2,7 +2,6 @@ const customerModule = require("./customer-manager");
 const orderModule = require("./order-manager");
 const paymentModule = require("./payment-manager");
 const productModule = require("./product-manager");
-const purchaseModule = require("./purchase-manager");
 const readlineSync = require("readline-sync");
 
 function menu() {
@@ -127,7 +126,7 @@ async function main() {
           break;
         case "8":
           const productId = readlineSync.question(
-            "Entrez l'identifiant du produit à supprimer : "
+            "Entrez l'identifiant du produit à supprimer :"
           );
           await productModule.destroy(productId);
           console.log("Produit supprimé avec succès !");
