@@ -12,12 +12,12 @@ async function get() {
   }
 }
 
-async function add(id, date, amount, payment_method, order_id) {
+async function add(id, date, amount, payment_method) {
   const connection = await pool.getConnection();
   try {
     const [result] = await connection.execute(
       "INSERT INTO payments (id, date, amount, payment_method, order_id) values (?, ?, ?, ?, ?)",
-      [id, date, amount, payment_method, order_id]
+      [id, date, amount, payment_method]
     );
     return result.insertId;
   } catch (error) {
@@ -27,12 +27,12 @@ async function add(id, date, amount, payment_method, order_id) {
   }
 }
 
-async function update(id, date, amount, payment_method, order_id) {
+async function update(id, date, amount, payment_method) {
   const connection = await pool.getConnection();
   try {
     const [result] = await connection.execute(
       "UPDATE payments SET date = ?, amount = ?, payment_method = ?, order_id = ? WHERE id = ?",
-      [date, amount, payment_method, order_id, id]
+      [date, amount, payment_method, id]
     );
     return result.affectedRows;
   } catch (error) {
