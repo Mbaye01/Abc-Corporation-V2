@@ -12,22 +12,12 @@ async function get() {
   }
 }
 
-async function add(
-  id,
-  name,
-  price,
-  stock,
-  description,
-  category,
-  barcode,
-  status
-) {
+async function add(id, name, price, stock, description, category, barcode, status) {
   const connection = await pool.getConnection();
   try {
     const [result] = await connection.execute(
       "INSERT INTO products (id, name, price, stock, description, category, barcode, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-      [id, name, price, stock, description, category, barcode, status]
-    );
+      [id, name, price, stock, description, category, barcode, status]);
     return result.insertId;
   } catch (error) {
     throw error;

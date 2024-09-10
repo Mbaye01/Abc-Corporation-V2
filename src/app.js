@@ -3,7 +3,6 @@ const orderModule = require("./order-manager");
 const paymentModule = require("./payment-manager");
 const productModule = require("./product-manager");
 const purchaseModule = require("./purchase-manager");
-
 const readlineSync = require("readline-sync");
 
 function menu() {
@@ -42,7 +41,17 @@ function promptAddProduct() {
   const id = readlineSync.question("Entrez l'identifiant du produit : ");
   const name = readlineSync.question("Entrez le nom du produit : ");
   const price = readlineSync.questionFloat("Entrez le prix : ");
-  return { id, name, price };
+  const stock = readlineSync.questionInt("Entrez la quantité en stock : ");
+  const description = readlineSync.question(
+    "Entrez la description du produit : "
+  );
+  const category = readlineSync.question("Entrez la catégorie du produit : ");
+  const barcode = readlineSync.question("Entrez le code-barres du produit : ");
+  const status = readlineSync.question(
+    "Entrez le statut du produit (disponible / en rupture) : "
+  );
+
+  return { id, name, price, stock, description, category, barcode, status };
 }
 
 function promptAddOrder() {
@@ -61,7 +70,11 @@ function promptAddPayment() {
     "Entrez l'identifiant de la commande : "
   );
   const amount = readlineSync.questionFloat("Entrez le montant : ");
-  return { id, orderId, amount };
+  const paymentMethod = readlineSync.question(
+    "Entrez le mode de paiement (carte, espèces, virement, etc.) : "
+  );
+
+  return { id, orderId, amount, paymentMethod };
 }
 
 function promptAddPurchase() {
