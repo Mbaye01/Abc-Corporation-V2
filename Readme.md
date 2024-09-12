@@ -107,9 +107,8 @@ npm start
 
 `editPayment(id: int, order_id : int, date : string, amount : string, payment_method : string)` : Permets de modifier les données d'un paiement;
 
-```destroyPayment(id: int) : Permets de supprimer une paiement;
+`destroyPayment(id: int)` : Permets de supprimer une paiement;
 
 ## Author
 
 [Mbaye Abdellahi Kalidou](https://github.com/Mbaye01/BRIEF-BD_CRUD.git)
-```
