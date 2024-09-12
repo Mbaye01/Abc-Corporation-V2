@@ -3,7 +3,7 @@ const pool = require("./db");
 async function get() {
   const connection = await pool.getConnection();
   try {
-    const [rows, _fields] = await connection.execute("SELECT * FROM cutomers");
+    const [rows, _fields] = await connection.execute("SELECT * FROM products");
     return rows;
   } catch (error) {
     throw error;
@@ -11,12 +11,22 @@ async function get() {
     connection.release();
   }
 }
-async function add(id, name, adress, email, phone) {
+
+async function add(
+  id,
+  name,
+  price,
+  stock,
+  description,
+  category,
+  barcode,
+  status
+) {
   const connection = await pool.getConnection();
   try {
     const [result] = await connection.execute(
-      "INSERT INTO customers (id, name, adress, email, phone) values (?, ?, ?, ?, ?)",
-      [id, name, adress, email, phone]
+      "INSERT INTO products (id, name, price, stock, description, category, barcode, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+      [id, name, price, stock, description, category, barcode, status]
     );
     return result.insertId;
   } catch (error) {
@@ -25,36 +35,49 @@ async function add(id, name, adress, email, phone) {
     connection.release();
   }
 }
-async function update(id, name, adress, email, phone) {
+
+async function update(
+  id,
+  name,
+  price,
+  stock,
+  description,
+  category,
+  barcode,
+  status
+) {
   const connection = await pool.getConnection();
   try {
     const [result] = await connection.execute(
-      "UPDATE customers SET id = ?, name = ?, email = ?, adress = ?, phone = ?, WHERE id = ?",
-      [id, name, adress, email, phone]
+      "UPDATE products SET name = ?, price = ?, stock = ?, description = ?, category = ?, barcode = ?, status = ? WHERE id = ?",
+      [name, price, stock, description, category, barcode, status, id]
     );
     return result.affectedRows;
   } catch (error) {
     throw error;
+  } finally {
+    connection.release();
   }
-  // finally {
-  //   connection.release();
-  // }
 }
+
 async function destroy(id) {
   const connection = await pool.getConnection();
   try {
     const [result] = await connection.execute(
-      "DELETE FROM customers WHERE id = ?",
+      "DELETE FROM products WHERE id = ?",
       [id]
     );
     return result.affectedRows;
   } catch (error) {
     if (error.code && error.code === "ER_ROW_IS_REFERENCED_2") {
-      throw new Error(`Deletion error ${id}`);
+      throw new Error(
+        `Cannot delete product with ID ${id} as it is referenced elsewhere.`
+      );
     }
     throw error;
   } finally {
     connection.release();
   }
 }
+
 module.exports = { get, add, update, destroy };
