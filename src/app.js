@@ -1,10 +1,11 @@
-const customerModule = require("./customer-manager");
-const orderModule = require("./order-manager");
-const paymentModule = require("./payment-manager");
-const productModule = require("./product-manager");
 const readlineSync = require("readline-sync");
+const customerModule = require("./customerModule");
+const productModule = require("./productModule");
+const orderModule = require("./orderModule");
+const paymentModule = require("./paymentModule");
 
-function menu() {
+// Menu principal
+function mainMenu() {
   console.log("1 Ajouter un customer");
   console.log("2 Lister tous les customers");
   console.log("3 Mettre à jour les infos d'un customer");
@@ -19,165 +20,131 @@ function menu() {
   console.log("12 Supprimer une commande");
   console.log("13 Ajouter un paiement");
   console.log("14 Lister tous les paiements");
-  console.log("15 Ajouter un achat");
-  console.log("16 Lister tous les achats");
   console.log("0 Quitter");
   const choix = readlineSync.question("Votre choix : ");
   return choix;
 }
 
-// Fonctions pour collecter les informations sur chaque entité
-function promptAddCustomer() {
-  const id = readlineSync.question("Entrez l'identifiant du customer : ");
-  const name = readlineSync.question("Entrez le nom : ");
-  const email = readlineSync.question("Entrez l'email : ");
-  const address = readlineSync.question("Entrez l'adresse : ");
-  const phone = readlineSync.question("Entrez le téléphone : ");
-  return { id, name, email, address, phone };
+// Sous-menus
+function customerMenu() {
+  console.log("1. Ajouter un customer");
+  console.log("2. Lister tous les customers");
+  console.log("3. Mettre à jour un customer");
+  console.log("4. Supprimer un customer");
+  console.log("0. Retour");
+  const choix = readlineSync.question("Votre choix : ");
+  return choix;
 }
 
-function promptAddProduct() {
-  const id = readlineSync.question("Entrez l'identifiant du produit : ");
-  const name = readlineSync.question("Entrez le nom du produit : ");
-  const price = readlineSync.questionFloat("Entrez le prix : ");
-  const stock = readlineSync.questionInt("Entrez la quantité en stock : ");
-  const description = readlineSync.question(
-    "Entrez la description du produit : "
-  );
-  const category = readlineSync.question("Entrez la catégorie du produit : ");
-  const barcode = readlineSync.question("Entrez le code-barres du produit : ");
-  const status = readlineSync.question(
-    "Entrez le statut du produit (disponible / en rupture) : "
-  );
-
-  return { id, name, price, stock, description, category, barcode, status };
+function productMenu() {
+  console.log("1. Ajouter un produit");
+  console.log("2. Lister tous les produits");
+  console.log("3. Mettre à jour un produit");
+  console.log("4. Supprimer un produit");
+  console.log("0. Retour");
+  const choix = readlineSync.question("Votre choix : ");
+  return choix;
 }
 
-function promptAddOrder() {
-  const id = readlineSync.question("Entrez l'identifiant de la commande : ");
-  const customerId = readlineSync.question(
-    "Entrez l'identifiant du customer : "
-  );
-  const productId = readlineSync.question("Entrez l'identifiant du produit : ");
-  const quantity = readlineSync.questionInt("Entrez la quantité : ");
-  return { id, customerId, productId, quantity };
+function orderMenu() {
+  console.log("1. Ajouter une commande");
+  console.log("2. Lister toutes les commandes");
+  console.log("3. Mettre à jour une commande");
+  console.log("4. Supprimer une commande");
+  console.log("0. Retour");
+  const choix = readlineSync.question("Votre choix : ");
+  return choix;
 }
 
-function promptAddPayment() {
-  const id = readlineSync.question("Entrez l'identifiant du paiement : ");
-  const orderId = readlineSync.question(
-    "Entrez l'identifiant de la commande : "
-  );
-  const amount = readlineSync.questionFloat("Entrez le montant : ");
-  const paymentMethod = readlineSync.question(
-    "Entrez le mode de paiement (carte, espèces, virement, etc.) : "
-  );
-
-  return { id, orderId, amount, paymentMethod };
-}
-
-function promptAddPurchase() {
-  const id = readlineSync.question("Entrez l'identifiant de l'achat : ");
-  const productId = readlineSync.question("Entrez l'identifiant du produit : ");
-  const quantity = readlineSync.questionInt("Entrez la quantité : ");
-  return { id, productId, quantity };
+function paymentMenu() {
+  console.log("1. Ajouter un paiement");
+  console.log("2. Lister tous les paiements");
+  console.log("0. Retour");
+  const choix = readlineSync.question("Votre choix : ");
+  return choix;
 }
 
 // Fonction principale pour gérer le menu
 async function main() {
-  try {
-    let choix = menu();
-    while (choix !== "0") {
-      switch (choix) {
-        case "1":
-          const customer = promptAddCustomer();
-          await customerModule.create(customer);
-          console.log("Customer ajouté avec succès !");
-          break;
-        case "2":
-          const customers = await customerModule.getAll();
-          console.log(customers);
-          break;
-        case "3":
-          const updatedCustomer = promptAddCustomer();
-          await customerModule.update(updatedCustomer.id, updatedCustomer);
-          console.log("Customer mis à jour avec succès !");
-          break;
-        case "4":
-          const customerId = readlineSync.question(
-            "Entrez l'identifiant du customer à supprimer : "
-          );
-          await customerModule.destroy(customerId);
-          console.log("Customer supprimé avec succès !");
-          break;
-        case "5":
-          const product = promptAddProduct();
-          await productModule.create(product);
-          console.log("Produit ajouté avec succès !");
-          break;
-        case "6":
-          const products = await productModule.getAll();
-          console.log(products);
-          break;
-        case "7":
-          const updatedProduct = promptAddProduct();
-          await productModule.update(updatedProduct.id, updatedProduct);
-          console.log("Produit mis à jour avec succès !");
-          break;
-        case "8":
-          const productId = readlineSync.question(
-            "Entrez l'identifiant du produit à supprimer :"
-          );
-          await productModule.destroy(productId);
-          console.log("Produit supprimé avec succès !");
-          break;
-        case "9":
-          const order = promptAddOrder();
-          await orderModule.create(order);
-          console.log("Commande ajoutée avec succès !");
-          break;
-        case "10":
-          const orders = await orderModule.getAll();
-          console.log(orders);
-          break;
-        case "11":
-          const updatedOrder = promptAddOrder();
-          await orderModule.update(updatedOrder.id, updatedOrder);
-          console.log("Commande mise à jour avec succès !");
-          break;
-        case "12":
-          const orderId = readlineSync.question(
-            "Entrez l'identifiant de la commande à supprimer : "
-          );
-          await orderModule.destroy(orderId);
-          console.log("Commande supprimée avec succès !");
-          break;
-        case "13":
-          const payment = promptAddPayment();
-          await paymentModule.create(payment);
-          console.log("Paiement ajouté avec succès !");
-          break;
-        case "14":
-          const payments = await paymentModule.getAll();
-          console.log(payments);
-          break;
-        case "15":
-          const purchase = promptAddPurchase();
-          await purchaseModule.create(purchase);
-          console.log("Achat ajouté avec succès !");
-          break;
-        case "16":
-          const purchases = await purchaseModule.getAll();
-          console.log(purchases);
-          break;
-        default:
-          console.log("Option invalide");
-          break;
-      }
-      choix = menu();
+  let choix = mainMenu();
+  while (choix !== "0") {
+    switch (choix) {
+      case "1": // Customer Menu
+        let customerChoice = customerMenu();
+        while (customerChoice !== "0") {
+          switch (customerChoice) {
+            case "1":
+              customerModule.addCustomer();
+              break;
+            case "2":
+              customerModule.listCustomers();
+              break;
+            case "3":
+              customerModule.updateCustomer();
+              break;
+            case "4":
+              customerModule.deleteCustomer();
+              break;
+          }
+          customerChoice = customerMenu();
+        }
+        break;
+      case "5": // Product Menu
+        let productChoice = productMenu();
+        while (productChoice !== "0") {
+          switch (productChoice) {
+            case "1":
+              productModule.addProduct();
+              break;
+            case "2":
+              productModule.listProducts();
+              break;
+            case "3":
+              productModule.updateProduct();
+              break;
+            case "4":
+              productModule.deleteProduct();
+              break;
+          }
+          productChoice = productMenu();
+        }
+        break;
+      case "9": // Order Menu
+        let orderChoice = orderMenu();
+        while (orderChoice !== "0") {
+          switch (orderChoice) {
+            case "1":
+              orderModule.addOrder();
+              break;
+            case "2":
+              orderModule.listOrders();
+              break;
+            case "3":
+              orderModule.updateOrder();
+              break;
+            case "4":
+              orderModule.deleteOrder();
+              break;
+          }
+          orderChoice = orderMenu();
+        }
+        break;
+      case "13": // Payment Menu
+        let paymentChoice = paymentMenu();
+        while (paymentChoice !== "0") {
+          switch (paymentChoice) {
+            case "1":
+              paymentModule.addPayment();
+              break;
+            case "2":
+              paymentModule.listPayments();
+              break;
+          }
+          paymentChoice = paymentMenu();
+        }
+        break;
     }
-  } catch (e) {
-    console.log("Erreur :", e.message);
+    choix = mainMenu();
   }
 }
 

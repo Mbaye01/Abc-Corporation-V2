@@ -1,9 +1,10 @@
 const pool = require("./db");
 
+// Fonction pour récupérer toutes les commandes
 async function get() {
   const connection = await pool.getConnection();
   try {
-    const [rows, _fields] = await connection.execute("SELECT * FROM payments");
+    const [rows, _fields] = await connection.execute("SELECT * FROM orders");
     return rows;
   } catch (error) {
     throw error;
@@ -12,12 +13,13 @@ async function get() {
   }
 }
 
-async function add(id, date, amount, payment_method) {
+// Fonction pour ajouter une commande
+async function add(id, date, delivery_address, track_number, status) {
   const connection = await pool.getConnection();
   try {
     const [result] = await connection.execute(
-      "INSERT INTO payments (id, date, amount, payment_method, order_id) values (?, ?, ?, ?, ?)",
-      [id, date, amount, payment_method]
+      "INSERT INTO orders (id, date, delivery_address, track_number, status) VALUES (?, ?, ?, ?, ?)",
+      [id, date, delivery_address, track_number, status]
     );
     return result.insertId;
   } catch (error) {
@@ -27,12 +29,13 @@ async function add(id, date, amount, payment_method) {
   }
 }
 
-async function update(id, date, amount, payment_method) {
+// Fonction pour mettre à jour une commande
+async function update(id, date, delivery_address, track_number, status) {
   const connection = await pool.getConnection();
   try {
     const [result] = await connection.execute(
-      "UPDATE payments SET date = ?, amount = ?, payment_method = ?, order_id = ? WHERE id = ?",
-      [date, amount, payment_method, id]
+      "UPDATE orders SET date = ?, delivery_address = ?, track_number = ?, status = ? WHERE id = ?",
+      [date, delivery_address, track_number, status, id]
     );
     return result.affectedRows;
   } catch (error) {
@@ -42,17 +45,20 @@ async function update(id, date, amount, payment_method) {
   }
 }
 
+// Fonction pour supprimer une commande
 async function destroy(id) {
   const connection = await pool.getConnection();
   try {
     const [result] = await connection.execute(
-      "DELETE FROM payments WHERE id = ?",
+      "DELETE FROM orders WHERE id = ?",
       [id]
     );
     return result.affectedRows;
   } catch (error) {
     if (error.code && error.code === "ER_ROW_IS_REFERENCED_2") {
-      throw new Error(`Deletion error for payment ID ${id}`);
+      throw new Error(
+        `Impossible de supprimer la commande avec l'ID ${id} car elle est référencée ailleurs.`
+      );
     }
     throw error;
   } finally {
