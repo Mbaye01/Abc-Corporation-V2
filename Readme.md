@@ -49,8 +49,6 @@ Pour démarrer l'application, exécutez la commande suivante :
 npm start
 ```
 
-## Documenations
-
 ### Règles de gestion
 
 - Un produit peut etre fournie à un ou plusieurs details;
@@ -60,14 +58,7 @@ npm start
 - Une commande doit avoir un ou plusieurs details.
 - Un payment n'est concerné que par une commande
 
-## Les Modules et Fonctions
-
-- customerModule
-- payementModule
-- orderModule
-- productModule
-
-#### customerModule
+## Les Fonctions
 
 `getCustomers()` : Permets de lister touts les clients;
 
@@ -111,4 +102,4 @@ npm start
 
 ## Author
 
-[Mbaye Abdellahi Kalidou](https://github.com/Mbaye01/BRIEF-BD_CRUD.git)
+[Mbaye Abdellahi Kalidou](https://github.com/Mbaye01/Abc-Corporation-V2.git)
