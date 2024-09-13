@@ -7,7 +7,7 @@ const connPool = mysql.createPool({
   password: "password123",
   database: "commercial_manager",
   // waitForConnections: true,
-  connectionLimit: 2,
+  connectionLimit: 4,
 });
 
 module.exports = connPool;

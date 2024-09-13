@@ -1,148 +1,194 @@
-const pool = require("./db");
+// const cnx = require("./db");
 
-// Fonction pour récupérer toutes les commandes
-async function getOrders() {
-  const connection = await pool.getConnection();
-  try {
-    const [rows, _fields] = await connection.execute("SELECT * FROM orders");
-    return rows;
-  } catch (error) {
-    console.error(
-      "Erreur lors de la récupération des commandes:",
-      error.message
-    );
-    throw new Error(
-      "Une erreur est survenue lors de la récupération des commandes."
-    );
-  } finally {
-    connection.release();
-  }
-}
+// const customerModule = {
+//   async getAll() {
+//     try {
+//       const [rows] = await cnx.query("SELECT * FROM customers");
+//       return rows;
+//     } catch (error) {
+//       console.error("Error while retrieving customers:", error);
+//       throw new Error("Unable to retrieve customers. Please try again later.");
+//     }
+//   },
 
-// Fonction pour ajouter une commande
-async function addOrder(id, date, delivery_address, track_number, status) {
-  const connection = await pool.getConnection();
-  try {
-    const [result] = await connection.execute(
-      "INSERT INTO orders (id, date, delivery_address, track_number, status) VALUES (?, ?, ?, ?, ?)",
-      [id, date, delivery_address, track_number, status]
-    );
-    return result.insertId;
-  } catch (error) {
-    console.error("Erreur lors de l'ajout de la commande:", error.message);
-    throw new Error("Une erreur est survenue lors de l'ajout de la commande.");
-  } finally {
-    connection.release();
-  }
-}
+//   async getById(id) {
+//     try {
+//       const [rows] = await cnx.query("SELECT * FROM customers WHERE id = ?", [
+//         id,
+//       ]);
+//       if (rows.length > 0) {
+//         return rows[0];
+//       } else {
+//         throw new Error(
+//           `Customer with ID ${id} not found. Please add the customer first.`
+//         );
+//       }
+//     } catch (error) {
+//       console.error(`Error when retrieving the customer with ID ${id}:`, error);
+//       throw new Error(`Unable to retrieve the customer with ID ${id}.`);
+//     }
+//   },
 
-// Fonction pour mettre à jour une commande
-async function updateOrder(id, date, delivery_address, track_number, status) {
-  const connection = await pool.getConnection();
-  try {
-    const [result] = await connection.execute(
-      "UPDATE orders SET date = ?, delivery_address = ?, track_number = ?, status = ? WHERE id = ?",
-      [date, delivery_address, track_number, status, id]
-    );
-    return result.affectedRows;
-  } catch (error) {
-    console.error(
-      "Erreur lors de la mise à jour de la commande:",
-      error.message
-    );
-    throw new Error(
-      "Une erreur est survenue lors de la mise à jour de la commande."
-    );
-  } finally {
-    connection.release();
-  }
-}
+//   async create(data) {
+//     try {
+//       const [result] = await cnx.query(
+//         "INSERT INTO customers (name, address, email, phone) VALUES (?, ?, ?, ?)",
+//         [data.name, data.address, data.email, data.phone]
+//       );
+//       return result.insertId; // Returns the ID of the newly created customer
+//     } catch (error) {
+//       console.error("Error while creating the customer:", error);
+//       throw new Error(
+//         "Unable to create customer. Please check your input and try again."
+//       );
+//     }
+//   },
 
-// Fonction pour supprimer une commande
-async function deleteOrder(id) {
-  const connection = await pool.getConnection();
-  try {
-    const [result] = await connection.execute(
-      "DELETE FROM orders WHERE id = ?",
-      [id]
-    );
-    return result.affectedRows;
-  } catch (error) {
-    if (error.code && error.code === "ER_ROW_IS_REFERENCED_2") {
-      console.error(
-        `Erreur: la commande avec l'ID ${id} est référencée ailleurs.`
+//   async update(id, data) {
+//     try {
+//       const [result] = await cnx.query(
+//         "UPDATE customers SET name = ?, address = ?, email = ?, phone = ? WHERE id = ?",
+//         [data.name, data.address, data.email, data.phone, id]
+//       );
+//       if (result.affectedRows === 0) {
+//         throw new Error(`Customer with ID ${id} not found. Update failed.`);
+//       }
+//       return result.affectedRows; // Returns the number of affected rows
+//     } catch (error) {
+//       console.error(`Error while updating the customer with ID ${id}:`, error);
+//       throw new Error(
+//         `Unable to update customer with ID ${id}. Please check your input.`
+//       );
+//     }
+//   },
+
+//   async delete(id) {
+//     try {
+//       const [result] = await cnx.query("DELETE FROM customers WHERE id = ?", [
+//         id,
+//       ]);
+//       if (result.affectedRows === 0) {
+//         throw new Error(`Customer with ID ${id} not found. Deletion failed.`);
+//       }
+//       return result.affectedRows; // Returns the number of deleted rows
+//     } catch (error) {
+//       console.error(`Error when deleting the customer with ID ${id}:`, error);
+//       throw new Error(`Unable to delete customer with ID ${id}.`);
+//     }
+//   },
+// };
+
+// module.exports = customersModule;
+
+const cnx = require("./db");
+
+const customerModule = {
+  async create(customer) {
+    try {
+      const { name, address, email, phone } = customer;
+
+      // Validate input
+      if (!name || !address || !email || !phone) {
+        throw new Error(
+          "All fields (name, address, email, phone) are required."
+        );
+      }
+
+      // SQL query to insert a new customer
+      const [result] = await cnx.query(
+        "INSERT INTO customers (name, address, email, phone) VALUES (?, ?, ?, ?)",
+        [name, address, email, phone]
       );
+
+      // Return the created customer with its ID
+      const createdCustomer = {
+        id: result.insertId,
+        name,
+        address,
+        email,
+        phone,
+      };
+
+      return createdCustomer;
+    } catch (error) {
+      console.error("Error while creating the customer:", error);
       throw new Error(
-        `Impossible de supprimer la commande avec l'ID ${id} car elle est référencée ailleurs.`
-      );
-    } else {
-      console.error(
-        "Erreur lors de la suppression de la commande:",
-        error.message
-      );
-      throw new Error(
-        "Une erreur est survenue lors de la suppression de la commande."
+        "Unable to create customer. Please check your input and try again."
       );
     }
-  } finally {
-    connection.release();
-  }
-}
+  },
 
-// Fonction pour afficher les quantités des détails
-function displayDetailQuantities() {
-  if (detail.length > 0) {
-    detail.forEach((d, i) => {
-      console.log(`Quantité du détail ${i + 1}: ${d.quantity}`);
-    });
-  } else {
-    console.log("Aucun détail disponible.");
-  }
-}
+  async getAll() {
+    try {
+      const [rows] = await cnx.query("SELECT * FROM customers");
+      return rows;
+    } catch (error) {
+      console.error("Error retrieving customers:", error);
+      throw new Error("Unable to retrieve customers. Please try again later.");
+    }
+  },
 
-const detail = [
-  { id: 1, product_id: 101, quantity: 2 },
-  { id: 2, product_id: 102, quantity: 5 },
-  { id: 3, product_id: 103, quantity: 3 },
-];
+  async getById(id) {
+    try {
+      const [rows] = await cnx.query("SELECT * FROM customers WHERE id = ?", [
+        id,
+      ]);
+      if (rows.length > 0) {
+        return rows[0];
+      } else {
+        throw new Error(`Customer with ID ${id} not found`);
+      }
+    } catch (error) {
+      console.error(`Error retrieving customer with ID ${id}:`, error);
+      throw new Error(`Unable to retrieve customer with ID ${id}.`);
+    }
+  },
 
-// Exemple d'utilisation des fonctions
-async function main() {
-  try {
-    // Ajout d'une commande
-    const newOrderId = await addOrder(
-      1,
-      "2024-09-11",
-      "123 Main St",
-      "TRACK123",
-      "pending"
-    );
-    console.log(`Nouvelle commande ajoutée avec l'ID: ${newOrderId}`);
+  async update(id, customer) {
+    try {
+      const { name, address, email, phone } = customer;
 
-    // Récupération de toutes les commandes
-    const orders = await getOrders();
-    console.log("Commandes récupérées:", orders);
+      // Validate input
+      if (!name || !address || !email || !phone) {
+        throw new Error(
+          "All fields (name, address, email, phone) are required."
+        );
+      }
 
-    // Mise à jour d'une commande
-    const updatedRows = await updateOrder(
-      1,
-      "2024-09-12",
-      "456 Elm St",
-      "TRACK456",
-      "shipped"
-    );
-    console.log(`${updatedRows} commande(s) mise(s) à jour.`);
+      const [result] = await cnx.query(
+        "UPDATE customers SET name = ?, address = ?, email = ?, phone = ? WHERE id = ?",
+        [name, address, email, phone, id]
+      );
 
-    // Suppression d'une commande
-    const deletedRows = await deleteOrder(1);
-    console.log(`${deletedRows} commande(s) supprimée(s).`);
+      if (result.affectedRows === 0) {
+        throw new Error(`Customer with ID ${id} not found.`);
+      }
 
-    // Affichage des quantités de détails
-    displayDetailQuantities();
-  } catch (error) {
-    console.error("Erreur dans la fonction principale:", error.message);
-  }
-}
+      return result.affectedRows; // Returns the number of affected rows
+    } catch (error) {
+      console.error(`Error updating customer with ID ${id}:`, error);
+      throw new Error(
+        `Unable to update customer with ID ${id}. Please check the input.`
+      );
+    }
+  },
 
-// Lancer la fonction principale
-main();
+  async delete(id) {
+    try {
+      const [result] = await cnx.query("DELETE FROM customers WHERE id = ?", [
+        id,
+      ]);
+
+      if (result.affectedRows === 0) {
+        throw new Error(`Customer with ID ${id} not found.`);
+      }
+
+      return result.affectedRows; // Returns the number of deleted rows
+    } catch (error) {
+      console.error(`Error deleting customer with ID ${id}:`, error);
+      throw new Error(`Unable to delete customer with ID ${id}.`);
+    }
+  },
+};
+
+module.exports = customerModule;
