@@ -17,7 +17,7 @@ MySQL (ou MariaDB)
 
 ## Installation
 
-Suivez ces étapes pour configurer le projet sur votre machine locale :
+suivez ces étapes pour configurer le projet sur machine locale :
 
 - Clonez le repository
 
