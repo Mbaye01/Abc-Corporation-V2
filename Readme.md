@@ -24,7 +24,7 @@ suivez ces étapes pour configurer le projet sur machine locale :
 bash
 
 ```
-https://github.com/Mbaye01/BRIEF-BD_CRUD.git
+https://github.com/Mbaye01/Abc-Corporation-V2.git
 ```
 
 - Accédez au dossier du projet :
@@ -49,56 +49,51 @@ Pour démarrer l'application, exécutez la commande suivante :
 npm start
 ```
 
-### Règles de gestion
+### Configuration de la base de données :
 
-- Un produit peut etre fournie à un ou plusieurs details;
-- Un client peut faire plusieurs commandes;
-- Une commande n'est fait que par client;
-- Un detail commande est concerné par une commande;
-- Une commande doit avoir un ou plusieurs details.
-- Un payment n'est concerné que par une commande
+Le fichier ./src/db.js configure la connexion à la base de données. Avant d'exécuter l'application, remplacez "root" par votre nom d'utilisateur et "password" par votre mot de passe pour la connexion locale.
 
-## Les Fonctions
+### Fonctionnalités
 
-`getCustomers()` : Permets de lister touts les clients;
+#### Customers
 
-`addCustomer(name : string, address : string, email : string, phone : string)` : Permets d'ajouter un nouveau client;
+- get() : Permets de lister touts les clients;
 
-`editCustomer(id: int, name: string, address: string, email: string, phone: string)` : Permets de modifier les données d'un client;
+- addCustomer(name : string, address : string, email : string, phone : string) : Permets d'ajouter un nouveau client;
 
-`destryCustomer(id : int)` : Permets de supprimer un client;
+- updateCustomer(id: int, name: string, address: string, email: string, phone: string) : Permets de modifier les données d'un client;
 
-#### productModule
+- destroyCustomer(id : int) : Permets de supprimer un client;
 
-`getProducts()` : Permets de lister tous les produits;
+#### Products
 
-`addProduct(name: string, description: string, price: string, stock: string, category: string, barcode: string, status: string)` : Permets d'ajouter un nouveau produit;
+- get() : Permets de lister tous les produits;
 
-`editProduct(id : int, name: string, description: string, price: string, stock: string, category: string, barcode: string, status: string)` : Permets de modifier les données d'un produit;
+- addProduct(name: string, description: string, price: float, stock: string, category: string, barcode: string, status: string) : Permets d'ajouter un nouveau produit;
 
-`destroyProduct(id : int)` : Permets de supprimer un produit;
+- updateProduct(id : int, name: string, description: string, price: float, stock: string, category: string, barcode: string, status: string) : Permets de modifier les données d'un produit;
 
-#### orderModule
+- destroyProduct(id : int) : Permets de supprimer un produit;
 
-`getOrder()` : Permets de lister toutes les commandes;
+#### Orders
 
-`getOrder()` : Permets de lister une commande et ses details
+- getOrderById(id : int) : Permets de lister une commande et ses details part id
 
-`addOrder(commande: object, tableauDetails: array[object])` : Permets d'ajouter une nouvelle commande et ses details;
+- addOrder(date:date, delivery_address:string, customer_id:int, track_number:string, status:string) : Permets d'ajouter une nouvelle commande et ses details;
 
-`editOrder(id: int, title : string, type : string, survey_id : int)` : Permets de modifier les données d'une commande et ses details;
+- updateOrder(id: int, title : string, type : string, survey_id : int) : Permets de modifier les données d'une commande
 
-`destryOrder(id:int)` : Permets de supprimer une commande et ses details;
+- destroyOrder(id:int) : Permets de supprimer une commande et ses details;
 
-#### paymentModule
+#### Payments
 
-`getPayments()` : Permets de lister tous les paiements;
+- get() : Permets de lister tous les paiements;
 
-`addPayment(id: int, order_id : int, date : string, amount : string, payment_method : string)` : Permets d'ajouter un nouveau paiement;
+- addPayment(id: int, order_id : int, date : string, amount : string, payment_method : string) : Permets d'ajouter un nouveau paiement;
 
-`editPayment(id: int, order_id : int, date : string, amount : string, payment_method : string)` : Permets de modifier les données d'un paiement;
+- updatePayment(id: int, order_id : int, date : string, amount : string, payment_method : string) : Permets de modifier les données d'un paiement;
 
-`destroyPayment(id: int)` : Permets de supprimer une paiement;
+- destroyPayment(id: int) : Permets de supprimer une paiement;
 
 ## Author
 
