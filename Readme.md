@@ -24,23 +24,19 @@ suivez ces étapes pour configurer le projet sur machine locale :
 bash
 
 ```
-https://github.com/Mbaye01/Abc-Corporation-V2.git
+https://github.com/Mbaye01/Order-Management.git
 ```
 
 - Accédez au dossier du projet :
 
 ```
-cd BRIEF_BD_CRUD
+cd order-management
 ```
 
 ## Installez les dépendances
 
 ```bash
 npm install
-```
-
-```bash
-mysql2 install
 ```
 
 Pour démarrer l'application, exécutez la commande suivante :
