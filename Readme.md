@@ -24,23 +24,19 @@ suivez ces étapes pour configurer le projet sur machine locale :
 bash
 
 ```
-https://github.com/Mbaye01/BRIEF-BD_CRUD.git
+https://github.com/Mbaye01/Order-Management.git
 ```
 
 - Accédez au dossier du projet :
 
 ```
-cd BRIEF_BD_CRUD
+cd Order-Managemnt
 ```
 
 ## Installez les dépendances
 
 ```bash
 npm install
-```
-
-```bash
-mysql2 install
 ```
 
 Pour démarrer l'application, exécutez la commande suivante :
